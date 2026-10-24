@@ -12,13 +12,13 @@ async function main() {
   const repo = path.resolve(__dirname, '..');
   const temporary = mkdtempSync(path.join(os.tmpdir(), 'gossip-editor-smoke-'));
   const binary = path.join(temporary, 'gossip');
+  const dataFile = path.join(temporary, 'content.json');
   const key = randomBytes(24).toString('hex');
   const base = 'http://127.0.0.1:18123';
   let server;
   let browser;
-  try {
-    execFileSync('go', ['build', '-o', binary, './cmd/gossip'], { cwd: repo, stdio: 'pipe' });
-    server = spawn(binary, ['-listen', '127.0.0.1:18123', '-dev-editor'], {
+  async function startServer() {
+    server = spawn(binary, ['-listen', '127.0.0.1:18123', '-dev-editor', '-data-file', dataFile], {
       cwd: repo, env: { ...process.env, GOSSIP_DEV_EDITOR_KEY: key }, stdio: ['ignore', 'pipe', 'pipe'],
     });
     let output = '';
@@ -32,6 +32,10 @@ async function main() {
       });
     });
     await startup;
+  }
+  try {
+    execFileSync('go', ['build', '-o', binary, './cmd/gossip'], { cwd: repo, stdio: 'pipe' });
+    await startServer();
     browser = await chromium.launch({
       headless: true,
       ...(process.env.GOSSIP_CHROME_PATH ? { executablePath: process.env.GOSSIP_CHROME_PATH } : {}),
@@ -74,12 +78,25 @@ async function main() {
     })).status(), 422);
     await page.goto(`${base}/posts/welcome`);
     assert.equal(await page.locator('.content').textContent(), content);
+    // Simulate process loss after the save response; no graceful flush is used.
+    const stopped = once(server, 'exit');
+    server.kill('SIGKILL');
+    await stopped;
+    await startServer();
+    await page.goto(`${base}/posts/welcome`);
+    assert.equal(await page.locator('h1').textContent(), title);
+    assert.equal(await page.locator('.content').textContent(), content);
+    assert.equal(await page.locator('.content script, .content b').count(), 0);
+    await page.goto(`${base}/dev/posts/welcome/edit?key=${key}`);
+    assert.equal(await page.getByLabel('Title').inputValue(), title);
+    assert.equal(await page.getByLabel('Content').inputValue(), content);
     console.log(JSON.stringify({
       status: 'PASS', browser: browser.version(),
       checks: ['native form submit / 303 / view', 'Japanese content', 'HTML escaped',
         'sample plugin footer', 'reload within process', 'missing key rejected',
-        'empty title browser and server validation', 'rejected writes leave content unchanged'],
-      persistence: 'in-memory only; restart persistence is not implemented',
+        'empty title browser and server validation', 'rejected writes leave content unchanged',
+        'SIGKILL / restart / view and editor retain saved content'],
+      persistence: 'local JSON snapshot; process restart verified, power-loss durability unverified',
     }, null, 2));
   } finally {
     try {

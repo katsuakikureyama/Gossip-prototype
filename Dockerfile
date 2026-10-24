@@ -10,4 +10,4 @@ COPY --from=build /out/gossip /gossip
 USER 65532:65532
 EXPOSE 8080
 ENTRYPOINT ["/gossip"]
-CMD ["-listen", "0.0.0.0:8080"]
+CMD ["-listen", "0.0.0.0:8080", "-data-file", ""]

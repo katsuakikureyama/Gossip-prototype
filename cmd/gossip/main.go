@@ -18,6 +18,7 @@ import (
 func main() {
 	listen := flag.String("listen", "127.0.0.1:8080", "HTTP listen address")
 	devEditor := flag.Bool("dev-editor", false, "enable the local fixture editor")
+	dataFile := flag.String("data-file", ".gossip/content.json", "local content snapshot (empty for in-memory fixture)")
 	versionJSON := flag.Bool("version-json", false, "print build identity and exit")
 	flag.Parse()
 
@@ -32,12 +33,21 @@ func main() {
 	if err := registry.Register(sample.Plugin{}); err != nil {
 		log.Fatalf("register sample plugin: %v", err)
 	}
-	store := cms.NewMemoryStore(cms.Post{
+	seed := cms.Post{
 		Slug:      "welcome",
 		Title:     "Welcome to Gossip",
-		Content:   "This is an in-memory Phase 0 fixture, not a compatibility claim.",
+		Content:   "Welcome to the Gossip development fixture.",
 		UpdatedAt: time.Now().UTC(),
-	})
+	}
+	var store cms.Store = cms.NewMemoryStore(seed)
+	if *dataFile != "" {
+		persistent, err := cms.OpenFileStore(*dataFile, seed)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer persistent.Close()
+		store = persistent
+	}
 	handler, err := cms.NewHandler(cms.Config{
 		Store:        store,
 		Plugins:      registry,
