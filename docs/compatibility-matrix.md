@@ -6,6 +6,7 @@ requires stored evidence; `generated` and `compiled` are not `PASS`.
 
 | Surface | Reference | Current status | Evidence / limitation |
 | --- | --- | --- | --- |
+| Local native editor browser flow | Gossip runtime `19aa421`, harness `6d09fe5` | SMOKE PASS | Chrome form/save/303/view, reload, escaping and rejected writes; [evidence](evidence/browser-editor-2026-10-24.md); no restart persistence |
 | Native Go Plugin SDK | Gossip-owned `v1alpha1` package | SMOKE PASS | `go test ./...` at `4f2ae36`; validates manifests, atomic registration and priority/registration ordering only |
 | Fixture edit/view HTTP path | Gossip-owned in-memory fixture | SMOKE PASS | `go test ./...` at `4f2ae36`; escaping, sample render hook, disabled/keyed editor and save path only; not production auth/persistence |
 | Native plugin build failure preserves Slot A | Release manager | SMOKE PASS | unit test plus `sh scripts/demo-ab-build.sh` at `4f2ae36`; failed real Go build leaves release state byte-for-byte unchanged |

@@ -4,6 +4,12 @@ Last updated: 2026-10-24 (JST)
 
 ## Present source state
 
+- Local Chrome edit/save/view smoke PASS at runtime `19aa421`, harness `6d09fe5`:
+  native form submit/303, Japanese content, escaping, plugin output, reload,
+  missing-key rejection and empty-title validation. See
+  [browser evidence](evidence/browser-editor-2026-10-24.md). Storage is in-memory;
+  process restart does not preserve edits. Temporary browser/server files cleaned up.
+
 - Native string-filter dispatch now has a real WordPress differential PASS:
   five owned cases, two calls each, against WordPress 6.6.2 / PHP 8.3.13.
   Target `df11d5e680a849a526e14f35383447c5fc13d8bf`; command, image/fixture hashes
