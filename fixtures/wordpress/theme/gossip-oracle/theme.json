@@ -1,0 +1,22 @@
+{
+  "$schema": "https://schemas.wp.org/wp/6.6/theme.json",
+  "version": 3,
+  "settings": {
+    "appearanceTools": true,
+    "color": {
+      "palette": [
+        {
+          "name": "Oracle accent",
+          "slug": "oracle-accent",
+          "color": "#28536b"
+        }
+      ]
+    }
+  },
+  "styles": {
+    "color": {
+      "background": "#f7fafc",
+      "text": "#14213d"
+    }
+  }
+}

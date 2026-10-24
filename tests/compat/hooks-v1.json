@@ -1,0 +1,25 @@
+{
+  "schema": "gossip.hook-fixture/v1",
+  "cases": [
+    {"id": "empty", "input": "seed", "handlers": []},
+    {"id": "priority", "input": "seed", "handlers": [
+      {"priority": 20, "prefix": "C(", "suffix": ")"},
+      {"priority": 10, "prefix": "A(", "suffix": ")"},
+      {"priority": 15, "prefix": "B(", "suffix": ")"}
+    ]},
+    {"id": "equal-priority", "input": "seed", "handlers": [
+      {"priority": 10, "prefix": "first(", "suffix": ")"},
+      {"priority": 10, "prefix": "second(", "suffix": ")"},
+      {"priority": 10, "prefix": "third(", "suffix": ")"}
+    ]},
+    {"id": "boundaries-and-ties", "input": "", "handlers": [
+      {"priority": 999, "prefix": "last(", "suffix": ")"},
+      {"priority": 0, "prefix": "zero-first(", "suffix": ")"},
+      {"priority": 0, "prefix": "zero-second(", "suffix": ")"}
+    ]},
+    {"id": "unicode", "input": "こんにちは & <content>", "handlers": [
+      {"priority": 50, "prefix": "「", "suffix": "」"},
+      {"priority": 20, "prefix": "前", "suffix": "後"}
+    ]}
+  ]
+}
