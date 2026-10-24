@@ -38,7 +38,7 @@ side-effect/exception comparisons; Gutenberg blocks, block themes, `theme.json`,
 templates, and dynamic blocks; and GoHP compiler/report failure paths.
 
 `compose.yaml` and `.env.example` define the kit and version pins. For commit
-`4f2ae36`, `sh scripts/check-oracle-fixture.sh` and
+`a0d3bf0`, `sh scripts/check-oracle-fixture.sh` and
 `docker compose --env-file .env.example config -q` passed on 2026-10-24 JST.
 Those static checks did not pull or run any image, so the WordPress oracle and
 candidate comparison remain UNTESTED.

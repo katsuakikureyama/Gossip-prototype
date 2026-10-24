@@ -10,7 +10,7 @@ requires stored evidence; `generated` and `compiled` are not `PASS`.
 | Fixture edit/view HTTP path | Gossip-owned in-memory fixture | SMOKE PASS | `go test ./...` at `4f2ae36`; escaping, sample render hook, disabled/keyed editor and save path only; not production auth/persistence |
 | Native plugin build failure preserves Slot A | Release manager | SMOKE PASS | unit test plus `sh scripts/demo-ab-build.sh` at `4f2ae36`; failed real Go build leaves release state byte-for-byte unchanged |
 | Native candidate Slot B selection | Release manager | SMOKE PASS | real sample-plugin binaries built with stamped IDs; verification, SHA-256, activation and tamper rejection covered at `4f2ae36` |
-| Compose/oracle fixture structure | `.env.example`, Compose and owned fixtures | SMOKE PASS (static only) | layout checker and `docker compose ... config -q` PASS; images were not pulled or run |
+| Compose/oracle fixture structure | `.env.example`, Compose and owned fixtures | SMOKE PASS (static only) | layout checker and `docker compose ... config -q` PASS at `a0d3bf0`; images were not pulled or run |
 | WordPress core | `wordpress:6.6.2-php8.3-apache` fixture | UNTESTED | Pinned-tag fixture exists; no WordPress process/differential test was run |
 | Hook ordering | WordPress 6.6.2 oracle fixture | UNTESTED | Native Gossip order has a unit PASS; no cross-runtime observation |
 | Gutenberg block markup | WordPress 6.6.2 owned fixture | UNTESTED | Stored markup fixture is insufficient evidence until the oracle runs |

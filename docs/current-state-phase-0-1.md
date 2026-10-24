@@ -14,16 +14,17 @@ Last updated: 2026-10-24 (JST)
 
 ## Verification record
 
-Implementation/config target: `4f2ae36757b6c0c34cefbf0ab0e684179c1cb246`
-on branch `codex/phase-0-1`. The later documentation-only evidence commit does
-not alter the tested implementation or Compose configuration.
+Go implementation target: `4f2ae36757b6c0c34cefbf0ab0e684179c1cb246`.
+Oracle/Compose configuration target after the internal-network URL correction:
+`a0d3bf085332d914d4d886a1880468f62b675add`. Both are on branch
+`codex/phase-0-1`; the later evidence-only commit does not alter either target.
 
 | Command (2026-10-24 JST, one run for this target/config) | Result |
 | --- | --- |
 | `go test ./...` | PASS: Plugin SDK, HTML escaping/sample render hook, keyed development editor save, release failure preservation, B activation and tamper rejection |
 | `sh scripts/demo-ab-build.sh` | PASS: real sample-plugin binary in A, failed B build leaves state byte-for-byte unchanged, verified B build activates |
-| `sh scripts/check-oracle-fixture.sh` | PASS: required fixture layout and non-floating version tags present |
-| `docker compose --env-file .env.example config -q` | PASS: Compose resolves and validates without pulling or running images |
+| `sh scripts/check-oracle-fixture.sh` (configuration target `a0d3bf0`) | PASS: required fixture layout and non-floating version tags present |
+| `docker compose --env-file .env.example config -q` (configuration target `a0d3bf0`) | PASS: Compose resolves and validates without pulling or running images |
 
 No Docker image, WordPress/PHP process, MySQL database, third-party ZIP,
 Composer script, production secret, or production data was executed or used.
