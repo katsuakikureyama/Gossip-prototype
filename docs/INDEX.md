@@ -7,7 +7,8 @@ than released-product commitments.
 | Document | Purpose | Status |
 | --- | --- | --- |
 | [Current state](current-state-phase-0-1.md) | Implemented, unimplemented, and migration status | Current snapshot |
-| [Browser editor evidence](evidence/browser-editor-2026-10-24.md) | Local Chrome form save/view and rejected writes | SMOKE PASS; memory storage only |
+| [Local content store](local-content-store.md) | Storage contract, capability exclusions and restart evidence | Local persistence SMOKE PASS; Linux/FreeBSD COMPILED only |
+| [Browser editor evidence](evidence/browser-editor-2026-10-24.md) | Historical local Chrome form save/view and rejected writes | SMOKE PASS; memory-only baseline superseded by local store report |
 | [Hook differential evidence](evidence/hook-differential-2026-10-24.md) | Shared fixture contract and real WordPress/native SDK comparison | Five owned cases DIFFERENTIAL PASS |
 | [Architecture proposal](architecture-proposal.md) | Components, trust boundaries, release lifecycle | PROPOSAL |
 | [Security proposal](security-proposal.md) | Threat model and build/activation controls | PROPOSAL |

@@ -57,6 +57,25 @@ The starter Go packages can be exercised locally with:
 go test ./...
 ```
 
+To try the local editor (development only):
+
+```sh
+export GOSSIP_DEV_EDITOR_KEY="$(openssl rand -hex 24)"
+go run ./cmd/gossip -dev-editor
+```
+
+View `http://127.0.0.1:8080/posts/welcome`. To edit, open
+`http://127.0.0.1:8080/dev/posts/welcome/edit?key=YOUR_KEY`, replacing `YOUR_KEY`
+with the generated environment value. Keep that key private and do not expose
+this development server publicly.
+
+Local runs save to `.gossip/content.json` relative to the working directory;
+saved edits survive process restart. Use `-data-file /path/to/content.json` to
+choose a location or `-data-file ""` for an in-memory fixture. Docker's default
+command explicitly uses memory: persistence requires a writable mounted
+directory and an explicit `-data-file` argument. See the
+[local store contract and evidence](docs/local-content-store.md) for limitations.
+
 The repository includes a local Docker Compose WordPress-oracle kit. Its owned
 fixture passed a pinned WordPress 6.6.2 oracle smoke on 2026-10-24; HTTP rendering
 and database compatibility remain unimplemented and unverified. The

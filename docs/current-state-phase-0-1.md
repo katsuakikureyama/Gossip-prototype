@@ -4,11 +4,18 @@ Last updated: 2026-10-24 (JST)
 
 ## Present source state
 
-- Local Chrome edit/save/view smoke PASS at runtime `19aa421`, harness `6d09fe5`:
+- Local JSON persistence and restart smoke PASS at `1539a21`: saves survive
+  SIGKILL after a successful response and process restart, including both view
+  and editor. Race-enabled CMS tests cover failed writes, corruption rejection,
+  lock rejection and concurrent saves. Linux/FreeBSD binaries compile; only
+  macOS runtime verified. See [store contract/evidence](local-content-store.md).
+  Local default is `.gossip/content.json`; Docker default remains memory-only.
+- Historical Chrome edit/save/view smoke PASS at runtime `19aa421`, harness `6d09fe5`:
   native form submit/303, Japanese content, escaping, plugin output, reload,
   missing-key rejection and empty-title validation. See
-  [browser evidence](evidence/browser-editor-2026-10-24.md). Storage is in-memory;
-  process restart does not preserve edits. Temporary browser/server files cleaned up.
+  [browser evidence](evidence/browser-editor-2026-10-24.md). Its memory-only
+  limitation is superseded by the local persistence result above. Temporary
+  browser/server files cleaned up.
 
 - Native string-filter dispatch now has a real WordPress differential PASS:
   five owned cases, two calls each, against WordPress 6.6.2 / PHP 8.3.13.
@@ -58,9 +65,11 @@ Documentation is not evidence that a feature is safe for production.
 
 ## Unimplemented or unverified
 
-- Production session/authorization, persistent content/database mapping, plugin
+- Production session/authorization, WordPress database mapping/import, plugin
   intake, and isolated build execution. The current editor is a loopback-default,
   explicit development fixture protected only by a per-run key.
+- Power-loss durability, multi-host storage, mounted Docker persistence and
+  Windows support. Local JSON persistence is not a production database claim.
 - Production WordPress adapter and HTTP compatibility contract. The local
   `gossip.hook-fixture/v1` harness compares only owned string-filter dispatch;
   the separate HTTP runner still provides oracle-only evidence.
