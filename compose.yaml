@@ -1,0 +1,109 @@
+name: gossip-dev
+
+# Phase 0 development kit. These services are intentionally local-only and
+# contain no production credentials. WordPress is an oracle, never a Gossip
+# runtime dependency or a production deployment recipe.
+services:
+  gossip:
+    build:
+      context: .
+    ports:
+      - "${GOSSIP_PORT:-8080}:8080"
+    restart: "no"
+
+  wordpress-mysql:
+    image: ${WORDPRESS_MYSQL_IMAGE:?set WORDPRESS_MYSQL_IMAGE to the reviewed, pinned MySQL image}
+    environment:
+      MYSQL_DATABASE: ${WORDPRESS_DB_NAME:-wordpress}
+      MYSQL_USER: ${WORDPRESS_DB_USER:-gossip_oracle}
+      MYSQL_PASSWORD: ${WORDPRESS_DB_PASSWORD:-gossip-oracle-local-only}
+      MYSQL_ROOT_PASSWORD: ${WORDPRESS_DB_ROOT_PASSWORD:-gossip-root-local-only}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-log-bin
+    volumes:
+      - wordpress-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u$${MYSQL_USER} -p$${MYSQL_PASSWORD} --silent"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
+    restart: "no"
+
+  wordpress-oracle:
+    image: ${WORDPRESS_ORACLE_IMAGE:?set WORDPRESS_ORACLE_IMAGE to the reviewed, pinned WordPress image}
+    depends_on:
+      wordpress-mysql:
+        condition: service_healthy
+    environment:
+      WORDPRESS_DB_HOST: wordpress-mysql:3306
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME:-wordpress}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER:-gossip_oracle}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD:-gossip-oracle-local-only}
+      WORDPRESS_DEBUG: "0"
+    ports:
+      - "${WORDPRESS_ORACLE_PORT:-8088}:80"
+    volumes:
+      - wordpress-data:/var/www/html
+      - ./fixtures/wordpress/theme/gossip-oracle:/var/www/html/wp-content/themes/gossip-oracle:ro
+      - ./fixtures/wordpress/plugin/gossip-oracle-fixture.php:/var/www/html/wp-content/plugins/gossip-oracle-fixture.php:ro
+    healthcheck:
+      test: ["CMD-SHELL", "php -r 'exit(@file_get_contents(\"http://127.0.0.1/wp-login.php\") === false ? 1 : 0);'"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
+    restart: "no"
+
+  # Run explicitly after wordpress-oracle is healthy. It installs only the
+  # checked-in fixture theme/plugin and fixed content; it never downloads or
+  # runs a third-party ZIP, Composer script, or host PHP process.
+  wordpress-bootstrap:
+    image: ${WORDPRESS_CLI_IMAGE:?set WORDPRESS_CLI_IMAGE to the reviewed, pinned WordPress CLI image}
+    profiles: ["oracle"]
+    depends_on:
+      wordpress-oracle:
+        condition: service_healthy
+    user: "33:33"
+    environment:
+      WP_CLI_CACHE_DIR: /tmp/wp-cli-cache
+      WORDPRESS_DB_HOST: wordpress-mysql:3306
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME:-wordpress}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER:-gossip_oracle}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD:-gossip-oracle-local-only}
+      WORDPRESS_ORACLE_URL: ${WORDPRESS_ORACLE_URL:-http://localhost:8088}
+      WORDPRESS_ORACLE_ADMIN_USER: ${WORDPRESS_ORACLE_ADMIN_USER:-oracle_admin}
+      WORDPRESS_ORACLE_ADMIN_PASSWORD: ${WORDPRESS_ORACLE_ADMIN_PASSWORD:-oracle-admin-local-only}
+      WORDPRESS_ORACLE_ADMIN_EMAIL: ${WORDPRESS_ORACLE_ADMIN_EMAIL:-oracle@example.invalid}
+    working_dir: /var/www/html
+    volumes:
+      - wordpress-data:/var/www/html
+      - ./fixtures/wordpress/theme/gossip-oracle:/var/www/html/wp-content/themes/gossip-oracle:ro
+      - ./fixtures/wordpress/plugin/gossip-oracle-fixture.php:/var/www/html/wp-content/plugins/gossip-oracle-fixture.php:ro
+      - ./fixtures/wordpress/seed:/seed:ro
+      - ./fixtures/wordpress/bootstrap.sh:/bootstrap.sh:ro
+    entrypoint: ["sh", "/bootstrap.sh"]
+    restart: "no"
+
+  # The runner verifies the real WordPress reference. A candidate URL is
+  # optional because Phase 0 has no WordPress-compatible Gossip HTTP contract.
+  compat-runner:
+    image: ${COMPAT_RUNNER_IMAGE:?set COMPAT_RUNNER_IMAGE to the reviewed, pinned curl image}
+    profiles: ["compat"]
+    depends_on:
+      wordpress-oracle:
+        condition: service_healthy
+    environment:
+      ORACLE_BASE_URL: http://wordpress-oracle
+      CANDIDATE_BASE_URL: ${CANDIDATE_BASE_URL:-}
+      REQUIRE_CANDIDATE: ${REQUIRE_CANDIDATE:-0}
+    volumes:
+      - ./tests/compat:/tests:ro
+    entrypoint: ["sh", "/tests/wordpress-oracle-smoke.sh"]
+    restart: "no"
+
+volumes:
+  wordpress-data:
+  wordpress-mysql-data:

@@ -1,0 +1,5 @@
+.git
+.gossip
+docs
+tests
+**/*_test.go
