@@ -10,15 +10,17 @@ requires stored evidence; `generated` and `compiled` are not `PASS`.
 | Fixture edit/view HTTP path | Gossip-owned in-memory fixture | SMOKE PASS | `go test ./...` at `4f2ae36`; escaping, sample render hook, disabled/keyed editor and save path only; not production auth/persistence |
 | Native plugin build failure preserves Slot A | Release manager | SMOKE PASS | unit test plus `sh scripts/demo-ab-build.sh` at `4f2ae36`; failed real Go build leaves release state byte-for-byte unchanged |
 | Native candidate Slot B selection | Release manager | SMOKE PASS | real sample-plugin binaries built with stamped IDs; verification, SHA-256, activation and tamper rejection covered at `4f2ae36` |
-| Compose/oracle fixture structure | `.env.example`, Compose and owned fixtures | SMOKE PASS (static only) | layout checker and `docker compose ... config -q` PASS at `a0d3bf0`; images were not pulled or run |
-| WordPress core | `wordpress:6.6.2-php8.3-apache` fixture | UNTESTED | Pinned-tag fixture exists; no WordPress process/differential test was run |
-| Hook ordering | WordPress 6.6.2 oracle fixture | UNTESTED | Native Gossip order has a unit PASS; no cross-runtime observation |
-| Gutenberg block markup | WordPress 6.6.2 owned fixture | UNTESTED | Stored markup fixture is insufficient evidence until the oracle runs |
-| `theme.json` and block themes | WordPress 6.6.2 owned fixture | UNTESTED | Fixture exists; runtime not demonstrated |
+| Compose/oracle development kit | `.env.example`, Compose and owned fixtures | SMOKE PASS | static checks at `a0d3bf0`; disposable build/up/bootstrap/runner/cleanup at `e22b21a`; exact digests in the [evidence record](evidence/oracle-smoke-2026-10-24.md) |
+| Pinned WordPress oracle | `wordpress:6.6.2-php8.3-apache` owned fixture | SMOKE PASS (oracle only) | WordPress installed and named markers passed; no Gossip differential/general core claim |
+| Hook ordering | WordPress 6.6.2 oracle fixture | UNTESTED | `send_headers` and `the_content` named markers passed; their general/cross-runtime ordering was not observed |
+| Gutenberg block markup | WordPress 6.6.2 owned fixture | SMOKE PASS (oracle only) | Owned post stored, returned by REST and rendered; no Gossip block runtime exists |
+| `theme.json` and block themes | WordPress 6.6.2 owned fixture | SMOKE PASS (oracle only) | Owned block theme activated and its named style/title markers rendered; no Gossip renderer exists |
 | Templates, parts, `wp_template` overrides | Pinned release TBD | UNTESTED | No fixture/DB comparison |
 | Dynamic blocks | Pinned release TBD | UNTESTED | No callback/runtime comparison |
 | Classic themes / `functions.php` | Pinned theme/WP TBD | UNTESTED | No PHP claim |
-| `wp_posts`, terms, options import | Snapshot fixture TBD | UNTESTED | No DB-copy migration test |
+| `wp_posts` and terms oracle observations | Owned disposable fixture | SMOKE PASS (oracle only) | Owned post/category created and queried through WordPress; no DB-copy/Gossip import test |
+| WordPress DB/options import | Snapshot fixture TBD | UNTESTED | No DB-copy migration or Gossip mapping test |
+| Owned WordPress fixture plugin | `gossip-oracle-fixture` 0.1.0 | SMOKE PASS (oracle only) | Activation, hook header and content marker passed; this is not third-party plugin compatibility |
 | WordPress plugins/themes | Exact source/version | UNSUPPORTED / UNTESTED | No third-party report |
 | GoHP translated PHP | draft PR #2 `feat/phase0-transpiler@56234c7` | UNTESTED | Owned-fixture CI only; `main` empty; `generated` is not compatibility evidence |
 | GoHP builder adapter | `gossip.builder/v0.1` proposal | UNTESTED | No Gossip adapter implementation/evidence; tag/license/stable API undecided upstream |

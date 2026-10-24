@@ -17,7 +17,9 @@ Last updated: 2026-10-24 (JST)
 Go implementation target: `4f2ae36757b6c0c34cefbf0ab0e684179c1cb246`.
 Oracle/Compose configuration target after the internal-network URL correction:
 `a0d3bf085332d914d4d886a1880468f62b675add`. Both are on branch
-`codex/phase-0-1`; the later evidence-only commit does not alter either target.
+`codex/phase-0-1`. The full disposable runtime smoke used head
+`e22b21a90f7c9da08c6b3f40f4ad73c592ce2fd4`; its exact image digests and
+cleanup are in [the oracle evidence record](evidence/oracle-smoke-2026-10-24.md).
 
 | Command (2026-10-24 JST, one run for this target/config) | Result |
 | --- | --- |
@@ -25,9 +27,13 @@ Oracle/Compose configuration target after the internal-network URL correction:
 | `sh scripts/demo-ab-build.sh` | PASS: real sample-plugin binary in A, failed B build leaves state byte-for-byte unchanged, verified B build activates |
 | `sh scripts/check-oracle-fixture.sh` (configuration target `a0d3bf0`) | PASS: required fixture layout and non-floating version tags present |
 | `docker compose --env-file .env.example config -q` (configuration target `a0d3bf0`) | PASS: Compose resolves and validates without pulling or running images |
+| isolated Compose build/up + `wordpress-bootstrap` + `compat-runner` (runtime head `e22b21a`) | PASS after one network-stalled builder pull was canceled and retried; pinned WordPress oracle hooks, Gutenberg, block theme/`theme.json`, post and category markers passed; Gossip comparison explicitly UNVERIFIED |
+| Gossip container `healthz` / version / plugin inventory / welcome render | PASS: `ok`, development build identity, sample manifest and plugin footer observed |
+| `docker compose ... down --volumes --remove-orphans` | PASS: validation containers, network and two disposable volumes removed |
 
-No Docker image, WordPress/PHP process, MySQL database, third-party ZIP,
-Composer script, production secret, or production data was executed or used.
+Only the recorded pinned WordPress/PHP/MySQL/CLI/curl images and owned fixture
+were executed. No third-party plugin/theme ZIP, Composer script, production
+secret, production database, or production data was used.
 
 ## Documentation delivered in this change set
 
@@ -44,8 +50,9 @@ Documentation is not evidence that a feature is safe for production.
 - Production session/authorization, persistent content/database mapping, plugin
   intake, and isolated build execution. The current editor is a loopback-default,
   explicit development fixture protected only by a per-run key.
-- Execution of the Compose kit against its version-pinned WordPress/MySQL/CLI/
-  runner images.
+- A versioned Gossip compatibility HTTP/trace contract and any WordPress-to-
+  Gossip differential comparison. The current runner intentionally stopped at
+  the WordPress oracle result.
 - WordPress core, Gutenberg/block theme, `theme.json`, classic-theme, database,
   and third-party plugin compatibility.
 - GoHP builder adapter and translated WordPress/PHP artifact execution.

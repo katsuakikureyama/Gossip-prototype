@@ -53,10 +53,10 @@ The starter Go packages can be exercised locally with:
 go test ./...
 ```
 
-The repository includes a local Docker Compose WordPress-oracle kit. Its static
-fixture and resolved Compose configuration have been validated, but the images
-have not been pulled or executed. The service boundaries and evidence
-requirements are in the
+The repository includes a local Docker Compose WordPress-oracle kit. Its owned
+fixture passed a pinned WordPress 6.6.2 oracle smoke on 2026-10-24; Gossip-to-
+WordPress differential compatibility remains unimplemented and unverified. The
+service boundaries and evidence requirements are in the
 [Docker development kit](docs/docker-development-kit.md).
 
 Do not use production secrets or a production WordPress database. Treat plugin

@@ -1,4 +1,4 @@
-# Docker development kit — PROPOSAL / CONFIG VALIDATED
+# Docker development kit — PROPOSAL / OWNED ORACLE SMOKE VALIDATED
 
 The Compose kit in this repository is an isolated local comparison environment.
 It is not a production deployment recipe and must never mount production secrets
@@ -40,5 +40,11 @@ templates, and dynamic blocks; and GoHP compiler/report failure paths.
 `compose.yaml` and `.env.example` define the kit and version pins. For commit
 `a0d3bf0`, `sh scripts/check-oracle-fixture.sh` and
 `docker compose --env-file .env.example config -q` passed on 2026-10-24 JST.
-Those static checks did not pull or run any image, so the WordPress oracle and
-candidate comparison remain UNTESTED.
+The disposable runtime smoke then passed at head `e22b21a`: WordPress bootstrap,
+owned oracle hook/content/Gutenberg/theme/category markers, Gossip health/plugin
+render, and full container/network/volume cleanup. See the
+[exact evidence and image digests](evidence/oracle-smoke-2026-10-24.md).
+
+The runner still reported Gossip comparison **UNVERIFIED** because no versioned
+WordPress-compatibility HTTP/trace contract exists. This is an oracle-fixture
+PASS, not WordPress compatibility or production-readiness evidence.
