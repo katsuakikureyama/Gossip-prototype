@@ -1,12 +1,67 @@
 package cms
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"reflect"
 	"sync"
 	"testing"
 )
+
+func TestCreateFileStoreNeverReplacesExistingPath(t *testing.T) {
+	for _, kind := range []string{"snapshot", "corrupt", "symlink", "dangling symlink"} {
+		t.Run(kind, func(t *testing.T) {
+			dir := t.TempDir()
+			path := filepath.Join(dir, "content.json")
+			if kind == "snapshot" {
+				store, err := CreateFileStore(path, Post{Slug: "original", Title: "Original"})
+				if err != nil {
+					t.Fatal(err)
+				}
+				store.Close()
+			} else if kind == "corrupt" {
+				if err := os.WriteFile(path, []byte("broken"), 0600); err != nil {
+					t.Fatal(err)
+				}
+			} else {
+				target := filepath.Join(dir, "target")
+				if kind == "symlink" {
+					if err := os.WriteFile(target, []byte("retain target"), 0600); err != nil {
+						t.Fatal(err)
+					}
+				}
+				if err := os.Symlink(target, path); err != nil {
+					t.Fatal(err)
+				}
+			}
+			before, beforeErr := os.ReadFile(path)
+			info, _ := os.Lstat(path)
+			if store, err := CreateFileStore(path, Post{Slug: "replacement", Title: "Must not replace"}); !errors.Is(err, os.ErrExist) {
+				if store != nil {
+					store.Close()
+				}
+				t.Fatalf("expected exists error, got %v", err)
+			}
+			after, afterErr := os.ReadFile(path)
+			afterInfo, _ := os.Lstat(path)
+			if string(before) != string(after) || (beforeErr == nil) != (afterErr == nil) || !os.SameFile(info, afterInfo) {
+				t.Fatal("existing destination changed")
+			}
+		})
+	}
+}
+
+func TestCreateFileStoreRejectsDuplicateSeeds(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "content.json")
+	if store, err := CreateFileStore(path, Post{Slug: "same", Title: "A"}, Post{Slug: "same", Title: "B"}); err == nil {
+		store.Close()
+		t.Fatal("duplicate seed silently lost")
+	}
+	if _, err := os.Lstat(path); !errors.Is(err, os.ErrNotExist) {
+		t.Fatalf("snapshot created: %v", err)
+	}
+}
 
 func TestFileStoreRestartAndLock(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "content.json")

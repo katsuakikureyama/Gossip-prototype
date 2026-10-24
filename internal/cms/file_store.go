@@ -33,6 +33,16 @@ type snapshot struct {
 // OpenFileStore seeds only a missing file, rejects corrupt/unknown data, and
 // holds an OS lock until Close or process exit (including abrupt termination).
 func OpenFileStore(path string, seeds ...Post) (*FileStore, error) {
+	return openFileStore(path, false, seeds...)
+}
+
+// CreateFileStore creates a new snapshot without replacing an existing path.
+// It is intended for explicit local imports, never a merge into live content.
+func CreateFileStore(path string, posts ...Post) (*FileStore, error) {
+	return openFileStore(path, true, posts...)
+}
+
+func openFileStore(path string, createOnly bool, seeds ...Post) (*FileStore, error) {
 	absolute, err := filepath.Abs(path)
 	if err != nil {
 		return nil, err
@@ -55,15 +65,27 @@ func OpenFileStore(path string, seeds ...Post) (*FileStore, error) {
 			store.Close()
 		}
 	}()
+	if createOnly {
+		if _, err := os.Lstat(absolute); err == nil {
+			return nil, os.ErrExist
+		} else if !errors.Is(err, os.ErrNotExist) {
+			return nil, err
+		}
+	}
 	file, err := os.Open(absolute)
 	if errors.Is(err, os.ErrNotExist) {
+		seen := map[string]bool{}
 		for _, p := range seeds {
 			if err := validatePost(p); err != nil {
 				return nil, err
 			}
+			if seen[p.Slug] {
+				return nil, fmt.Errorf("duplicate post slug %q", p.Slug)
+			}
+			seen[p.Slug] = true
 		}
 		store.memory = NewMemoryStore(seeds...)
-		if err := store.persist(store.memory.ListPosts()); err != nil {
+		if err := store.persist(store.memory.ListPosts(), true); err != nil {
 			return nil, err
 		}
 	} else {
@@ -71,6 +93,9 @@ func OpenFileStore(path string, seeds ...Post) (*FileStore, error) {
 			return nil, err
 		}
 		defer file.Close()
+		if createOnly {
+			return nil, os.ErrExist
+		}
 		data, err := io.ReadAll(io.LimitReader(file, maxSnapshotBytes+1))
 		if err != nil {
 			return nil, err
@@ -154,14 +179,14 @@ func (s *FileStore) SavePost(post Post) error {
 	if !replaced {
 		posts = append(posts, post)
 	}
-	if err := s.persist(posts); err != nil {
+	if err := s.persist(posts, false); err != nil {
 		return err
 	}
 	s.memory = NewMemoryStore(posts...)
 	return nil
 }
 
-func (s *FileStore) persist(posts []Post) error {
+func (s *FileStore) persist(posts []Post, createOnly bool) error {
 	data, err := json.MarshalIndent(snapshot{Schema: 1, Posts: posts}, "", "  ")
 	if err != nil {
 		return err
@@ -185,6 +210,11 @@ func (s *FileStore) persist(posts []Post) error {
 	}
 	if err = temporary.Close(); err != nil {
 		return err
+	}
+	if createOnly {
+		// Publish a complete file atomically, failing if anything occupies the
+		// destination, including a symlink. Never truncate or replace that path.
+		return os.Link(temporary.Name(), s.path)
 	}
 	// Same-directory rename publishes a complete file. A pre-rename failure
 	// leaves both the previous snapshot and the in-memory view unchanged.
