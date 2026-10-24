@@ -53,9 +53,10 @@ The starter Go packages can be exercised locally with:
 go test ./...
 ```
 
-The repository includes a local Docker Compose WordPress-oracle kit. It requires
-the reviewed pinned image values from `.env.example`; its execution result is not
-recorded here. The service boundaries and evidence requirements are in the
+The repository includes a local Docker Compose WordPress-oracle kit. Its static
+fixture and resolved Compose configuration have been validated, but the images
+have not been pulled or executed. The service boundaries and evidence
+requirements are in the
 [Docker development kit](docs/docker-development-kit.md).
 
 Do not use production secrets or a production WordPress database. Treat plugin

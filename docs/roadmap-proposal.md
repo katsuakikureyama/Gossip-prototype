@@ -1,7 +1,7 @@
 # Phase 0–1 roadmap — PROPOSAL
 
-1. **Starter runtime:** minimal Go HTTP app, fixture content, server-side
-   authorization, edit/view smoke path, versioned build ID, native sample plugin.
+1. **Starter runtime:** minimal Go HTTP app, fixture content, development-only
+   keyed edit/view smoke path, versioned build ID, native sample plugin.
 2. **Plugin/release contract:** native manifest/hook interface, non-executing
    inventory, immutable candidate build, Slot A/B selection, failed-build
    preservation and rollback demonstration.
@@ -16,7 +16,7 @@
 
 | Gate | Required evidence | Does not prove |
 | --- | --- | --- |
-| Native build | Sample pipeline PASS; failed candidate leaves Slot A unchanged; Slot B selection | WordPress/PHP compatibility |
+| Native build | **Phase 0 narrow PASS at `4f2ae36`:** sample pipeline, failed candidate leaves Slot A unchanged, Slot B selection | WordPress/PHP compatibility or production-safe plugin isolation |
 | Oracle | Pinned reference plus named reports | Broad WordPress parity |
 | Docker kit | Repeatable disposable-fixture run | Production readiness |
 | GoHP adapter | Pinned builder report + isolated test | Arbitrary WP plugin/theme support |

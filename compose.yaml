@@ -73,7 +73,7 @@ services:
       WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME:-wordpress}
       WORDPRESS_DB_USER: ${WORDPRESS_DB_USER:-gossip_oracle}
       WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD:-gossip-oracle-local-only}
-      WORDPRESS_ORACLE_URL: ${WORDPRESS_ORACLE_URL:-http://localhost:8088}
+      WORDPRESS_ORACLE_URL: http://wordpress-oracle
       WORDPRESS_ORACLE_ADMIN_USER: ${WORDPRESS_ORACLE_ADMIN_USER:-oracle_admin}
       WORDPRESS_ORACLE_ADMIN_PASSWORD: ${WORDPRESS_ORACLE_ADMIN_PASSWORD:-oracle-admin-local-only}
       WORDPRESS_ORACLE_ADMIN_EMAIL: ${WORDPRESS_ORACLE_ADMIN_EMAIL:-oracle@example.invalid}

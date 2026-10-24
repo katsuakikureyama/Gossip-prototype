@@ -6,13 +6,15 @@ requires stored evidence; `generated` and `compiled` are not `PASS`.
 
 | Surface | Reference | Current status | Evidence / limitation |
 | --- | --- | --- | --- |
-| Native Go Plugin SDK | Gossip-owned package | UNVERIFIED | Source and unit-test code exist; no recorded test command/result here |
-| Native plugin build failure preserves Slot A | Release manager | UNVERIFIED | Source and unit-test code exist; no recorded command/result here |
-| Native candidate Slot B selection | Release manager | UNVERIFIED | Source and unit-test code exist; no recorded command/result here |
-| WordPress core | Pinned release TBD | UNTESTED | No pinned oracle/fixture/differential test |
-| Hook ordering | Pinned WordPress TBD | UNTESTED | No cross-runtime observation |
-| Gutenberg block markup | Pinned WordPress TBD | UNTESTED | Stored markup is insufficient evidence |
-| `theme.json` and block themes | Pinned theme/WP TBD | UNTESTED | Runtime not demonstrated |
+| Native Go Plugin SDK | Gossip-owned `v1alpha1` package | SMOKE PASS | `go test ./...` at `4f2ae36`; validates manifests, atomic registration and priority/registration ordering only |
+| Fixture edit/view HTTP path | Gossip-owned in-memory fixture | SMOKE PASS | `go test ./...` at `4f2ae36`; escaping, sample render hook, disabled/keyed editor and save path only; not production auth/persistence |
+| Native plugin build failure preserves Slot A | Release manager | SMOKE PASS | unit test plus `sh scripts/demo-ab-build.sh` at `4f2ae36`; failed real Go build leaves release state byte-for-byte unchanged |
+| Native candidate Slot B selection | Release manager | SMOKE PASS | real sample-plugin binaries built with stamped IDs; verification, SHA-256, activation and tamper rejection covered at `4f2ae36` |
+| Compose/oracle fixture structure | `.env.example`, Compose and owned fixtures | SMOKE PASS (static only) | layout checker and `docker compose ... config -q` PASS; images were not pulled or run |
+| WordPress core | `wordpress:6.6.2-php8.3-apache` fixture | UNTESTED | Pinned-tag fixture exists; no WordPress process/differential test was run |
+| Hook ordering | WordPress 6.6.2 oracle fixture | UNTESTED | Native Gossip order has a unit PASS; no cross-runtime observation |
+| Gutenberg block markup | WordPress 6.6.2 owned fixture | UNTESTED | Stored markup fixture is insufficient evidence until the oracle runs |
+| `theme.json` and block themes | WordPress 6.6.2 owned fixture | UNTESTED | Fixture exists; runtime not demonstrated |
 | Templates, parts, `wp_template` overrides | Pinned release TBD | UNTESTED | No fixture/DB comparison |
 | Dynamic blocks | Pinned release TBD | UNTESTED | No callback/runtime comparison |
 | Classic themes / `functions.php` | Pinned theme/WP TBD | UNTESTED | No PHP claim |
