@@ -6,6 +6,7 @@ requires stored evidence; `generated` and `compiled` are not `PASS`.
 
 | Surface | Reference | Current status | Evidence / limitation |
 | --- | --- | --- | --- |
+| Owned WP-CLI public-post import | WordPress 6.6.2 / CLI 2.10.0; Gossip `6c78de7` | SMOKE PASS | Real owned export preview/create/reopen/raw-field equality and escaped HTTP handler display; [evidence](wordpress-post-import.md); no DB migration or block rendering claim |
 | Local JSON content persistence | Gossip `1539a21`, macOS arm64 | SMOKE PASS | Race-enabled CMS tests and Chrome save/SIGKILL/restart/view/edit; [contract/evidence](local-content-store.md); no power-loss or WordPress DB claim |
 | Local native editor browser flow | Gossip runtime/harness `1539a21` | SMOKE PASS | Chrome form/save/303/view, reload, escaping, rejected writes and process restart; [evidence](local-content-store.md) |
 | Native Go Plugin SDK | Gossip-owned `v1alpha1` package | SMOKE PASS | `go test ./...` at `4f2ae36`; validates manifests, atomic registration and priority/registration ordering only |
@@ -22,7 +23,7 @@ requires stored evidence; `generated` and `compiled` are not `PASS`.
 | Dynamic blocks | Pinned release TBD | UNTESTED | No callback/runtime comparison |
 | Classic themes / `functions.php` | Pinned theme/WP TBD | UNTESTED | No PHP claim |
 | `wp_posts` and terms oracle observations | Owned disposable fixture | SMOKE PASS (oracle only) | Owned post/category created and queried through WordPress; no DB-copy/Gossip import test |
-| WordPress DB/options import | Snapshot fixture TBD | UNTESTED | No DB-copy migration or Gossip mapping test |
+| General WordPress DB/options import | Snapshot fixture TBD | UNTESTED | No DB-copy migration/options mapping; narrow owned WP-CLI post import is recorded separately above |
 | Owned WordPress fixture plugin | `gossip-oracle-fixture` 0.1.0 | SMOKE PASS (oracle only) | Activation, hook header and content marker passed; this is not third-party plugin compatibility |
 | WordPress plugins/themes | Exact source/version | UNSUPPORTED / UNTESTED | No third-party report |
 | GoHP translated PHP | draft PR #2 `feat/phase0-transpiler@56234c7` | UNTESTED | Owned-fixture CI only; `main` empty; `generated` is not compatibility evidence |

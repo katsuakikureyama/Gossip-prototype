@@ -15,6 +15,11 @@ configuration has not been runtime-tested.
 
 - A missing snapshot is seeded once. Existing snapshots are loaded without
   overwriting their content with seed values.
+  Since `6c78de7`, initial creation publishes a synced temporary file with an
+  atomic hard link (requiring local hard-link support), so a destination that
+  appears concurrently is not replaced. The explicit create-only constructor
+  also rejects existing/corrupt files and symlinks; see
+  [the import report](wordpress-post-import.md) for updated CMS test evidence.
 - Schema version 1 contains a `posts` array. Invalid JSON, unknown fields,
   unsupported schema, duplicate slugs, invalid slugs and blank titles fail
   startup without replacing the snapshot. The snapshot limit is 16 MiB.

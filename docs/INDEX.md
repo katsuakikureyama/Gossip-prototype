@@ -7,6 +7,7 @@ than released-product commitments.
 | Document | Purpose | Status |
 | --- | --- | --- |
 | [Current state](current-state-phase-0-1.md) | Implemented, unimplemented, and migration status | Current snapshot |
+| [Owned WordPress post import](wordpress-post-import.md) | Offline preview, create-only snapshot, exclusions and real-export evidence | Owned public-post round trip PASS; not DB migration |
 | [Local content store](local-content-store.md) | Storage contract, capability exclusions and restart evidence | Local persistence SMOKE PASS; Linux/FreeBSD COMPILED only |
 | [Browser editor evidence](evidence/browser-editor-2026-10-24.md) | Historical local Chrome form save/view and rejected writes | SMOKE PASS; memory-only baseline superseded by local store report |
 | [Hook differential evidence](evidence/hook-differential-2026-10-24.md) | Shared fixture contract and real WordPress/native SDK comparison | Five owned cases DIFFERENTIAL PASS |

@@ -4,6 +4,12 @@ Last updated: 2026-10-24 (JST)
 
 ## Present source state
 
+- Owned WordPress post import PASS at `6c78de7`: offline preview and explicit
+  hash-confirmed create-only save, exact raw fields after reopen, and escaped
+  HTTP handler display from a real WordPress 6.6.2 export. Private/draft/passworded
+  content, stale previews and existing destination paths are rejected. See
+  [contract and evidence](wordpress-post-import.md). This is not DB migration or
+  block rendering. Dedicated disposable oracle resources were cleaned up.
 - Local JSON persistence and restart smoke PASS at `1539a21`: saves survive
   SIGKILL after a successful response and process restart, including both view
   and editor. Race-enabled CMS tests cover failed writes, corruption rejection,
@@ -65,7 +71,8 @@ Documentation is not evidence that a feature is safe for production.
 
 ## Unimplemented or unverified
 
-- Production session/authorization, WordPress database mapping/import, plugin
+- Production session/authorization, general WordPress database migration/import,
+  terms/media/options mapping, plugin
   intake, and isolated build execution. The current editor is a loopback-default,
   explicit development fixture protected only by a per-run key.
 - Power-loss durability, multi-host storage, mounted Docker persistence and

@@ -76,6 +76,12 @@ command explicitly uses memory: persistence requires a writable mounted
 directory and an explicit `-data-file` argument. See the
 [local store contract and evidence](docs/local-content-store.md) for limitations.
 
+The offline `gossip-import` command can preview an owned WordPress WP-CLI post
+export and, with an explicitly reviewed source hash, create a new local snapshot
+without overwriting existing data. See the
+[fixture import workflow and evidence](docs/wordpress-post-import.md).
+This does not import a WordPress database or reproduce block rendering.
+
 The repository includes a local Docker Compose WordPress-oracle kit. Its owned
 fixture passed a pinned WordPress 6.6.2 oracle smoke on 2026-10-24; HTTP rendering
 and database compatibility remain unimplemented and unverified. The
