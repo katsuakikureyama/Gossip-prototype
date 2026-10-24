@@ -17,6 +17,10 @@ Phase 0–1 is a proposal and starter-scaffold phase. The authoritative account 
 tested and untested scope is the [compatibility matrix](docs/compatibility-matrix.md).
 A successful compilation is a build result, not a functional-compatibility result.
 
+The first [WordPress/native hook differential](docs/evidence/hook-differential-2026-10-24.md)
+passes five owned string-filter cases against the pinned real WordPress engine.
+This covers callback priority, tie ordering and value propagation only.
+
 ## Project boundaries
 
 - **Gossip** owns CMS semantics, the native Go Plugin SDK, compatibility reports,
@@ -54,8 +58,8 @@ go test ./...
 ```
 
 The repository includes a local Docker Compose WordPress-oracle kit. Its owned
-fixture passed a pinned WordPress 6.6.2 oracle smoke on 2026-10-24; Gossip-to-
-WordPress differential compatibility remains unimplemented and unverified. The
+fixture passed a pinned WordPress 6.6.2 oracle smoke on 2026-10-24; HTTP rendering
+and database compatibility remain unimplemented and unverified. The
 service boundaries and evidence requirements are in the
 [Docker development kit](docs/docker-development-kit.md).
 

@@ -4,6 +4,11 @@ Last updated: 2026-10-24 (JST)
 
 ## Present source state
 
+- Native string-filter dispatch now has a real WordPress differential PASS:
+  five owned cases, two calls each, against WordPress 6.6.2 / PHP 8.3.13.
+  Target `df11d5e680a849a526e14f35383447c5fc13d8bf`; command, image/fixture hashes
+  and exclusions are in [the hook report](evidence/hook-differential-2026-10-24.md).
+
 - A Go module, native Go Plugin SDK and sample plugin, build-information package,
   Go HTTP app with fixture/edit-view paths, release-slot manager and unit-test
   sources, Compose development kit, and WordPress oracle fixtures are present.
@@ -50,9 +55,9 @@ Documentation is not evidence that a feature is safe for production.
 - Production session/authorization, persistent content/database mapping, plugin
   intake, and isolated build execution. The current editor is a loopback-default,
   explicit development fixture protected only by a per-run key.
-- A versioned Gossip compatibility HTTP/trace contract and any WordPress-to-
-  Gossip differential comparison. The current runner intentionally stopped at
-  the WordPress oracle result.
+- Production WordPress adapter and HTTP compatibility contract. The local
+  `gossip.hook-fixture/v1` harness compares only owned string-filter dispatch;
+  the separate HTTP runner still provides oracle-only evidence.
 - WordPress core, Gutenberg/block theme, `theme.json`, classic-theme, database,
   and third-party plugin compatibility.
 - GoHP builder adapter and translated WordPress/PHP artifact execution.

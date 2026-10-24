@@ -12,7 +12,8 @@ requires stored evidence; `generated` and `compiled` are not `PASS`.
 | Native candidate Slot B selection | Release manager | SMOKE PASS | real sample-plugin binaries built with stamped IDs; verification, SHA-256, activation and tamper rejection covered at `4f2ae36` |
 | Compose/oracle development kit | `.env.example`, Compose and owned fixtures | SMOKE PASS | static checks at `a0d3bf0`; disposable build/up/bootstrap/runner/cleanup at `e22b21a`; exact digests in the [evidence record](evidence/oracle-smoke-2026-10-24.md) |
 | Pinned WordPress oracle | `wordpress:6.6.2-php8.3-apache` owned fixture | SMOKE PASS (oracle only) | WordPress installed and named markers passed; no Gossip differential/general core claim |
-| Hook ordering | WordPress 6.6.2 oracle fixture | UNTESTED | `send_headers` and `the_content` named markers passed; their general/cross-runtime ordering was not observed |
+| Native string-filter dispatch | WordPress 6.6.2 real hook engine | DIFFERENTIAL PASS (five owned cases) | Priority, ties, empty hook, 0/999 boundaries and Unicode; two invocations each at `df11d5e`; [contract/evidence/exclusions](evidence/hook-differential-2026-10-24.md) |
+| General WordPress hook behavior | WordPress 6.6.2 | UNTESTED | Dynamic registration/removal, recursion, callback identity, references, multiple arguments and core filter stack are not covered |
 | Gutenberg block markup | WordPress 6.6.2 owned fixture | SMOKE PASS (oracle only) | Owned post stored, returned by REST and rendered; no Gossip block runtime exists |
 | `theme.json` and block themes | WordPress 6.6.2 owned fixture | SMOKE PASS (oracle only) | Owned block theme activated and its named style/title markers rendered; no Gossip renderer exists |
 | Templates, parts, `wp_template` overrides | Pinned release TBD | UNTESTED | No fixture/DB comparison |
